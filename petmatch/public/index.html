@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f8f6ef">
+  <meta name="description" content="PetMatch ช่วยให้สุนัขและแมวได้พบกับบ้านที่อบอุ่น">
+  <title>PetMatch — บ้านที่อบอุ่น เริ่มต้นจากการพบกัน</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <a class="brand" href="#home" aria-label="PetMatch หน้าแรก">
+      <span class="brand-mark">P</span>
+      <span>pet<span class="brand-green">match</span><small>FIND YOUR FOREVER FRIEND</small></span>
+    </a>
+    <button class="mobile-menu" id="mobileMenu" aria-label="เปิดเมนู">☰</button>
+    <nav id="mainNav">
+      <a href="#home" class="active">หน้าแรก</a>
+      <a href="#pets">ค้นหาน้อง</a>
+      <a href="#map-section">แผนที่หาบ้าน</a>
+      <a href="#how">วิธีรับเลี้ยง</a>
+      <a href="#favorites">รายการของฉัน</a>
+    </nav>
+    <div class="header-actions" id="headerActions">
+      <button class="btn btn-quiet" data-open-auth="login">เข้าสู่ระบบ</button>
+      <button class="btn btn-primary" data-open-auth="register">เริ่มต้นใช้งาน <span>↗</span></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero section-wrap" id="home">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-dot"></span> EVERY PET DESERVES A HOME</div>
+        <h1>เพื่อนตัวใหม่ของคุณ<br>กำลัง<span class="highlight">รอบ้านอยู่</span><span class="period">.</span></h1>
+        <p class="hero-description">บางทีความรักครั้งใหญ่ อาจเริ่มต้นจากอุ้งเท้าเล็ก ๆ สักคู่ มาพบกับเพื่อนซี้ที่กำลังรอคุณอยู่กันนะ</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary btn-large" href="#pets">ค้นหาน้องหมาน้องแมว <span>↗</span></a>
+          <a class="btn btn-outline btn-large" href="#map-section"><span class="pin-icon">⌖</span> ดูแผนที่ใกล้ฉัน</a>
+        </div>
+        <div class="social-proof">
+          <div class="avatar-stack">
+            <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=80&auto=format&fit=crop&q=80" alt="สุนัข">
+            <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=80&auto=format&fit=crop&q=80" alt="แมว">
+            <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=80&auto=format&fit=crop&q=80" alt="สุนัข">
+            <span>♡</span>
+          </div>
+          <div>
+            <strong id="heroAdopted">กำลังโหลด...</strong>
+            <small>เพื่อนตัวน้อยได้บ้านแล้ว</small>
+          </div>
+        </div>
+      </div>
+      <div class="hero-art">
+        <div class="hero-image-main">
+          <img src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&w=1100&q=85" alt="สุนัขและแมวกำลังนั่งด้วยกัน">
+        </div>
+        <div class="floating-note note-top">
+          <span class="note-icon peach">♡</span>
+          <span><strong>ความรักเริ่มต้นที่นี่</strong><small>Meet your new best friend</small></span>
+        </div>
+        <div class="floating-note note-bottom">
+          <span class="note-icon green">✓</span>
+          <span><strong>รับเลี้ยงด้วยหัวใจ</strong><small>เปลี่ยนชีวิตได้จริง</small></span>
+        </div>
+        <div class="decor decor-one">✳</div>
+        <div class="decor decor-two">✦</div>
+      </div>
+    </section>
+
+    <section class="search-strip section-wrap">
+      <form id="quickSearch" class="search-box">
+        <span class="search-symbol">⌕</span>
+        <label class="sr-only" for="searchInput">ค้นหาชื่อหรือสายพันธุ์</label>
+        <input id="searchInput" placeholder="ลองค้นหา ‘เจ้าส้ม’ หรือ ‘โกลเด้น’">
+        <div class="search-divider"></div>
+        <label class="sr-only" for="typeFilter">ประเภทสัตว์</label>
+        <select id="typeFilter">
+          <option value="">น้องทุกประเภท</option>
+          <option value="dog">น้องหมา 🐶</option>
+          <option value="cat">น้องแมว 🐱</option>
+        </select>
+        <button class="btn btn-primary" type="submit">ค้นหา <span>→</span></button>
+      </form>
+      <div class="quick-tags">
+        <span>กำลังฮิต:</span>
+        <button data-query="ลูกแมว">ลูกแมว</button>
+        <button data-query="เป็นมิตร">เป็นมิตร</button>
+        <button data-query="โกลเด้น">โกลเด้น</button>
+        <button data-query="รับเลี้ยงง่าย">รับเลี้ยงง่าย</button>
+      </div>
+    </section>
+
+    <section class="section-wrap pet-section" id="pets">
+      <div class="section-heading">
+        <div>
+          <div class="eyebrow">YOUR NEW BEST FRIEND</div>
+          <h2>สมาชิกตัวจิ๋วที่รอคุณอยู่ <span>♡</span></h2>
+          <p>ทุกตัวมีเรื่องราว และกำลังรอใครสักคนมาเขียนบทต่อไปด้วยกัน</p>
+        </div>
+        <a class="text-link" href="#pets" id="showAll">ดูทั้งหมด <span>↗</span></a>
+      </div>
+      <div class="category-row">
+        <div class="category-tabs">
+          <button class="category-tab selected" data-category="">ทั้งหมด <span id="allCount">—</span></button>
+          <button class="category-tab" data-category="dog">น้องหมา <span>🐶</span></button>
+          <button class="category-tab" data-category="cat">น้องแมว <span>🐱</span></button>
+        </div>
+        <div class="sort-wrap">
+          <span>เรียงตาม</span>
+          <select id="sortFilter">
+            <option value="featured">แนะนำสำหรับคุณ</option>
+            <option value="name">ชื่อ A–Z</option>
+          </select>
+        </div>
+      </div>
+      <div id="petGrid" class="pet-grid">
+        <div class="loading-card">กำลังตามหาน้อง ๆ ให้คุณ...</div>
+      </div>
+      <div id="petEmpty" class="empty-state hidden">
+        <div class="empty-illustration">♡</div>
+        <h3>ยังไม่มีน้องที่ตรงกับการค้นหา</h3>
+        <p>ลองเปลี่ยนคำค้นหาหรือเลือกประเภทอื่นดูนะ</p>
+        <button class="btn btn-outline" id="resetSearch">ล้างตัวกรอง</button>
+      </div>
+    </section>
+
+    <section class="section-wrap pet-section" id="favorites">
+      <div class="section-heading">
+        <div>
+          <div class="eyebrow">YOUR SAVED FRIENDS</div>
+          <h2>รายการโปรดของฉัน <span>♥</span></h2>
+          <p>เก็บน้อง ๆ ที่คุณสนใจไว้ดูอีกครั้ง และนำออกได้ทุกเมื่อ</p>
+        </div>
+      </div>
+      <div id="favoritesGrid" class="pet-grid">
+        <div class="loading-card">กำลังโหลดรายการโปรด...</div>
+      </div>
+      <div id="favoritesEmpty" class="empty-state hidden">
+        <div class="empty-illustration">♡</div>
+        <h3>ยังไม่มีรายการโปรด</h3>
+        <p>กดหัวใจบนการ์ดน้องที่คุณชอบ เพื่อเก็บไว้ที่นี่นะ</p>
+        <a class="btn btn-primary" href="#pets">ไปเลือกน้อง ๆ ♡</a>
+      </div>
+    </section>
+
+    <section class="map-band" id="map-section">
+      <div class="section-wrap map-layout">
+        <div class="map-copy">
+          <div class="eyebrow">A LITTLE CLOSER TO HOME</div>
+          <h2>บางทีเพื่อนซี้<br>อาจอยู่ใกล้<span class="highlight">กว่าที่คิด</span></h2>
+          <p>ค้นหาน้อง ๆ ที่กำลังรอบ้านบนแผนที่จริง ดูตำแหน่งและเลือกพื้นที่ที่สะดวกสำหรับคุณ</p>
+          <div class="map-search">
+            <span>⌖</span>
+            <label class="sr-only" for="areaSearch">ค้นหาพื้นที่</label>
+            <input id="areaSearch" placeholder="ค้นหาอำเภอหรือจังหวัด...">
+            <button id="searchArea" aria-label="ค้นหาพื้นที่">→</button>
+          </div>
+          <div class="map-legend">
+            <span><i class="legend-dot dog-dot"></i> น้องหมา</span>
+            <span><i class="legend-dot cat-dot"></i> น้องแมว</span>
+          </div>
+          <p class="map-tip">💡 กดที่หมุดเพื่อดูข้อมูลและรูปของน้อง</p>
+        </div>
+        <div class="map-frame">
+          <div id="petMap" aria-label="แผนที่แสดงตำแหน่งสัตว์ที่รอรับเลี้ยง"></div>
+          <div class="map-status">
+            <span class="live-dot"></span>
+            <span id="mapCount">กำลังโหลดตำแหน่ง...</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-wrap how-section" id="how">
+      <div class="center-heading">
+        <div class="eyebrow">A SIMPLE WAY TO LOVE</div>
+        <h2>เริ่มต้นความรักได้ง่าย ๆ <span>♡</span></h2>
+        <p>แค่ 3 ขั้นตอน ก็อาจเปลี่ยนโลกทั้งใบของใครบางตัว</p>
+      </div>
+      <div class="steps-grid">
+        <article class="step-card">
+          <div class="step-number">01</div>
+          <div class="step-illustration step-peach"><span>⌕</span></div>
+          <h3>เลือกเพื่อนที่ใช่</h3>
+          <p>ดูโปรไฟล์ อ่านเรื่องราว และค้นหาน้องที่เข้ากับไลฟ์สไตล์ของคุณ</p>
+        </article>
+        <article class="step-card">
+          <div class="step-number">02</div>
+          <div class="step-illustration step-green"><span>♡</span></div>
+          <h3>ส่งคำขอรับเลี้ยง</h3>
+          <p>เล่าให้เราฟังเกี่ยวกับบ้านและความพร้อม เพื่อให้การจับคู่เหมาะสมที่สุด</p>
+        </article>
+        <article class="step-card">
+          <div class="step-number">03</div>
+          <div class="step-illustration step-yellow"><span>⌂</span></div>
+          <h3>ต้อนรับสมาชิกใหม่</h3>
+          <p>ประสานงานกับผู้ดูแล เตรียมบ้านให้พร้อม แล้วเริ่มต้นบทใหม่ไปด้วยกัน</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="impact-section">
+      <div class="section-wrap impact-layout">
+        <div>
+          <div class="eyebrow">SMALL PAWS, BIG IMPACT</div>
+          <h2>หนึ่งการรับเลี้ยง<br>เปลี่ยนได้ทั้งชีวิต</h2>
+          <p>ขอบคุณที่เป็นส่วนหนึ่งของการสร้างบ้านที่อบอุ่นให้เพื่อนสี่ขา</p>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-icon">♡</span>
+            <strong id="statAvailable">—</strong>
+            <span>กำลังรอบ้าน</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">⌂</span>
+            <strong id="statAdopted">—</strong>
+            <span>ได้บ้านแล้ว</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">✳</span>
+            <strong id="statMembers">—</strong>
+            <span>คนรักสัตว์ในชุมชน</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-wrap responsible">
+      <div class="responsible-icon">✿</div>
+      <div>
+        <div class="eyebrow">LOVE IS A COMMITMENT</div>
+        <h2>รักเขาแล้ว ต้องดูแลกันไปนาน ๆ</h2>
+        <p>การรับเลี้ยงคือความรับผิดชอบระยะยาว โปรดเตรียมเวลา งบประมาณ พื้นที่ และความเข้าใจเรื่องสุขภาพของสัตว์ก่อนตัดสินใจ</p>
+      </div>
+      <a class="btn btn-outline" href="#how">เรียนรู้เพิ่มเติม <span>↗</span></a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="section-wrap footer-main">
+      <a class="brand" href="#home">
+        <span class="brand-mark">P</span>
+        <span>pet<span class="brand-green">match</span><small>FIND YOUR FOREVER FRIEND</small></span>
+      </a>
+      <p>บ้านที่อบอุ่น เริ่มต้นจากการพบกัน ♡</p>
+      <div class="footer-links">
+        <a href="#pets">ค้นหาน้อง</a>
+        <a href="#map-section">แผนที่</a>
+        <a href="#how">วิธีรับเลี้ยง</a>
+        <a href="mailto:hello@petmatch.local">ติดต่อเรา</a>
+      </div>
+    </div>
+    <div class="section-wrap footer-bottom">
+      <span>© 2026 PetMatch. Made with care for every paw.</span>
+      <span>ทุกอุ้งเท้าคู่ควรกับบ้านที่อบอุ่น</span>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="modal-backdrop hidden" id="authModal">
+    <section class="modal auth-modal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+      <button class="modal-close" data-close-modal aria-label="ปิด">×</button>
+      <div class="modal-brand">P</div>
+      <h2 id="authTitle">ยินดีที่ได้รู้จัก ♡</h2>
+      <p id="authSubtitle">เข้าสู่ระบบเพื่อเริ่มต้นเรื่องราวดี ๆ</p>
+      <form id="authForm">
+        <div class="form-field hidden" id="nameField">
+          <label for="authName">ชื่อที่ใช้แสดง</label>
+          <input id="authName" name="name" autocomplete="name" placeholder="ชื่อของคุณ">
+        </div>
+        <div class="form-field">
+          <label for="authEmail">อีเมล</label>
+          <input id="authEmail" name="email" type="email" autocomplete="email" required placeholder="you@example.com">
+        </div>
+        <div class="form-field">
+          <label for="authPassword">รหัสผ่าน</label>
+          <input id="authPassword" name="password" type="password" minlength="8" required autocomplete="current-password" placeholder="อย่างน้อย 8 ตัวอักษร">
+        </div>
+        <button class="btn btn-primary btn-full" type="submit" id="authSubmit">เข้าสู่ระบบ <span>→</span></button>
+        <p class="form-error" id="authError"></p>
+      </form>
+      <p class="switch-auth">
+        <span id="switchText">ยังไม่มีบัญชี?</span>
+        <button id="switchAuth" type="button">สมัครสมาชิก</button>
+      </p>
+    </section>
+  </div>
+
+  <div class="modal-backdrop hidden" id="detailModal">
+    <section class="modal detail-modal" role="dialog" aria-modal="true" aria-labelledby="detailName">
+      <button class="modal-close" data-close-modal aria-label="ปิด">×</button>
+      <div id="detailContent"></div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop hidden" id="adoptModal">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="adoptTitle">
+      <button class="modal-close" data-close-modal aria-label="ปิด">×</button>
+      <h2 id="adoptTitle">ส่งคำขอรับเลี้ยง ♡</h2>
+      <p>บอกเราอีกนิดเกี่ยวกับบ้านที่จะมอบให้น้อง</p>
+      <form id="adoptForm">
+        <input type="hidden" id="adoptPetId">
+        <div class="form-field">
+          <label for="adoptPhone">เบอร์โทรศัพท์ *</label>
+          <input id="adoptPhone" required placeholder="08x-xxx-xxxx">
+        </div>
+        <div class="form-field">
+          <label for="adoptAddress">ที่อยู่ / พื้นที่ที่พักอาศัย *</label>
+          <textarea id="adoptAddress" required rows="3" placeholder="จังหวัด อำเภอ และลักษณะที่พัก"></textarea>
+        </div>
+        <div class="form-field">
+          <label for="adoptMessage">ข้อความถึงผู้ดูแล</label>
+          <textarea id="adoptMessage" rows="3" placeholder="เล่าเกี่ยวกับตัวคุณและบ้านที่จะให้น้อง..."></textarea>
+        </div>
+        <button class="btn btn-primary btn-full" type="submit">ส่งคำขอ <span>→</span></button>
+        <p class="form-error" id="adoptError"></p>
+      </form>
+    </section>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

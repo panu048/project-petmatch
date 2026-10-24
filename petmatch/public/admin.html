@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PetMatch — Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+
+  <header class="admin-header">
+    <a class="brand" href="/">
+      <span class="brand-mark">P</span>
+      <span>pet<span class="brand-green">match</span><small>ADMIN CONSOLE</small></span>
+    </a>
+    <div class="admin-head-actions">
+      <span id="adminName">กำลังตรวจสอบสิทธิ์...</span>
+      <a class="btn btn-outline" href="/">กลับหน้าเว็บ ↗</a>
+      <button class="btn btn-primary" id="adminLogout">ออกจากระบบ</button>
+    </div>
+  </header>
+
+  <main class="admin-main">
+    <aside class="admin-sidebar">
+      <div class="eyebrow">WORKSPACE</div>
+      <button class="side-link selected" data-panel="pets">▦ <span>จัดการสัตว์</span></button>
+      <button class="side-link" data-panel="adoptions">♡ <span>คำขอรับเลี้ยง</span></button>
+      <button class="side-link" data-panel="users">♙ <span>สมาชิก</span></button>
+      <div class="sidebar-note">
+        <strong>♡ PetMatch</strong>
+        <p>ขอบคุณที่ช่วยให้เพื่อนสี่ขาได้พบบ้านที่อบอุ่น</p>
+      </div>
+    </aside>
+
+    <section class="admin-content">
+      <div class="admin-title-row">
+        <div>
+          <div class="eyebrow">ADMIN DASHBOARD</div>
+          <h1 id="panelTitle">จัดการข้อมูลสัตว์</h1>
+          <p id="panelSubtitle">เพิ่มข้อมูล แก้ไขรูปภาพ และดูแลโปรไฟล์สัตว์ที่กำลังรอบ้าน</p>
+        </div>
+        <button class="btn btn-primary" id="addPetBtn">＋ เพิ่มสัตว์ใหม่</button>
+      </div>
+
+      <div class="admin-stats">
+        <div><span>สัตว์ทั้งหมด</span><strong id="countAll">—</strong></div>
+        <div><span>กำลังรอบ้าน</span><strong id="countAvailable">—</strong></div>
+        <div><span>ได้บ้านแล้ว</span><strong id="countAdopted">—</strong></div>
+      </div>
+
+      <div class="admin-table-wrap" id="panelContent">
+        <div class="loading-card">กำลังโหลดข้อมูล...</div>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop hidden" id="petEditor">
+    <section class="modal editor-modal" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
+      <button class="modal-close" data-close-modal>×</button>
+      <h2 id="editorTitle">เพิ่มสัตว์ใหม่</h2>
+      <p>กรอกข้อมูลที่จำเป็นและเพิ่มพิกัดเพื่อแสดงน้องบนแผนที่</p>
+
+      <form id="petForm">
+        <input type="hidden" id="petId">
+        
+        <div class="editor-grid">
+          <div class="form-field">
+            <label for="petName">ชื่อสัตว์ *</label>
+            <input id="petName" required>
+          </div>
+          <div class="form-field">
+            <label for="petType">ประเภท *</label>
+            <select id="petType">
+              <option value="dog">สุนัข</option>
+              <option value="cat">แมว</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="petBreed">สายพันธุ์</label>
+            <input id="petBreed">
+          </div>
+          <div class="form-field">
+            <label for="petAge">อายุ</label>
+            <input id="petAge" placeholder="เช่น 6 เดือน">
+          </div>
+          <div class="form-field">
+            <label for="petGender">เพศ</label>
+            <select id="petGender">
+              <option value="unknown">ไม่ระบุ</option>
+              <option value="male">ผู้</option>
+              <option value="female">เมีย</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="petSize">ขนาด</label>
+            <select id="petSize">
+              <option value="small">เล็ก</option>
+              <option value="medium" selected>กลาง</option>
+              <option value="large">ใหญ่</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="petArea">พื้นที่ / จังหวัด</label>
+            <input id="petArea" placeholder="เช่น นครปฐม">
+          </div>
+          <div class="form-field">
+            <label for="petAddress">ที่อยู่โดยละเอียด</label>
+            <input id="petAddress">
+          </div>
+          <div class="form-field">
+            <label for="petLat">Latitude</label>
+            <input id="petLat" type="number" step="any" placeholder="13.8199">
+          </div>
+          <div class="form-field">
+            <label for="petLng">Longitude</label>
+            <input id="petLng" type="number" step="any" placeholder="100.0622">
+          </div>
+          <div class="form-field">
+            <label for="petStatus">สถานะ</label>
+            <select id="petStatus">
+              <option value="available">กำลังรอบ้าน</option>
+              <option value="pending">มีผู้สนใจ</option>
+              <option value="adopted">ได้บ้านแล้ว</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="petHealth">สุขภาพ</label>
+            <input id="petHealth" placeholder="เช่น ฉีดวัคซีนแล้ว">
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="petDescription">เรื่องราวของน้อง</label>
+          <textarea id="petDescription" rows="3"></textarea>
+        </div>
+
+        <label class="admin-check">
+          <input type="checkbox" id="petFeatured"> แสดงเป็นสัตว์แนะนำ
+        </label>
+
+        <div class="form-field">
+          <label for="petImages">รูปภาพ (JPEG, PNG, WebP ไม่เกิน 5 MB/รูป)</label>
+          <input id="petImages" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+          <div class="image-preview" id="imagePreview"></div>
+          <small class="hint">บันทึกข้อมูลสัตว์ก่อน แล้วจึงอัปโหลดรูปภาพได้</small>
+        </div>
+
+        <p class="form-error" id="petFormError"></p>
+
+        <div class="editor-actions">
+          <button class="btn btn-outline" type="button" data-close-modal>ยกเลิก</button>
+          <button class="btn btn-primary" type="submit">บันทึกข้อมูล ↗</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>
